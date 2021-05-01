@@ -1,0 +1,92 @@
+html {
+    height: 101%;
+}
+
+body {
+    background-color: #1ebea5;
+}
+
+div#wrapper {
+    background-color: white;
+    width: 700px;
+    margin: 30px auto 10px auto;
+    padding-bottom: 50px;
+    overflow: auto;
+    min-height: 400px;
+    -webkit-border-radius: 20px;
+    -moz-border-radius: 20px;
+}
+
+div#header {
+    width: 100%;
+    overflow: auto;
+}
+
+div#header img {
+    display: block;
+    float: left;
+    margin: 10px;
+}
+
+h1, h2, h3, h4 {
+    font-weight: bold;
+    text-shadow: 0 1px 1px #CCC;
+}
+
+h2, h3, h4 {
+    border-bottom: 1px solid #DDD;
+}
+
+h4 {
+    margin-bottom: 0.25em;
+}
+
+h2 {
+    margin-top: 20px;
+}
+
+ul {
+    margin: 0;
+}
+
+div#header h1 {
+    margin-top: 60px;
+    font-weight: bold;
+    float: left;
+}
+
+div#content {
+    width: 460px;
+    float: left;
+}
+
+div#menu {
+    width: 130px;
+    margin-left: 40px;
+    float: left;
+    font-size: 150%;
+}
+
+div#menu ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+div#menu ul li a {
+    color: #404040;
+    font-weight: bold;
+    text-decoration: none;
+    display: block;
+}
+
+div#menu ul li a:hover {
+    color: #333;
+    text-shadow: 0 1px 1px #AAA;
+}
+
+div#footer {
+    width: 700px;
+    margin: 0 auto;
+    text-align: center;
+}

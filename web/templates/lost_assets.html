@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block title %}Lost Assets{% endblock %}
+
+{% block content %}
+
+{% for asset in lost_assets %}
+<li>{{asset}}</li>
+{% endfor %}
+
+{% endblock %}

@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block title %}My assets{% endblock %}
+
+{% block content %}
+
+{% for asset in my_assets %}
+<li>{{asset}}</li>
+{% endfor %}
+
+{% endblock %}

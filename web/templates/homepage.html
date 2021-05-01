@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+
+{% for asset in assets %}
+<h3>{{asset["nickname"]}}</h3>
+[{{asset["timestamp"]}}]
+{% for meta in asset["metadata"] %}
+<li><b>{{meta["key"]}}</b>: {{meta["value"]}} {{meta["unit"]}}</li>
+{% endfor %}
+<br>
+{% endfor %}
+
+{% endblock %}
