@@ -25,6 +25,7 @@ import json
 
 # Third party library imports
 from flask import Flask, render_template
+from requests import Session
 
 # DomoTricks libraries
 from lib.sqlite import SqliteCmd
@@ -45,6 +46,28 @@ BLACKLIST = [
 ]
 
 APP = Flask(__name__, template_folder='web/templates', static_folder='web/static')
+SESSION = Session()
+
+def get_weather():
+    """
+    Get weather via OpenWeatherMap API
+    """
+    weather = {
+        'location': settings.LOCATION_NICKNAME,
+        'description': ' - ',
+        'humidity': ' - %',
+        'temperature': ' - °C'
+    }
+    req = SESSION.get(f'https://api.openweathermap.org/data/2.5/weather?q={settings.LOCATION}&appid={settings.API_KEY}&lang={settings.LANG}&units=metric')
+    if req.status_code != 200:
+        return weather
+    try:
+        weather['description'] = json.loads(req.text)['weather'][0]['description']
+        weather['humidity'] = f'{json.loads(req.text)["main"]["humidity"]} %'
+        weather['temperature'] = f'{json.loads(req.text)["main"]["temp"]} °C'
+    except:
+        pass
+    return weather
 
 @APP.route('/')
 def index():
@@ -72,7 +95,7 @@ def index():
             'timestamp': asset_data[0],
             'metadata': metadata
             })
-    return render_template('homepage.html', assets=result)
+    return render_template('homepage.html', assets=result, weather=get_weather())
 
 @APP.route('/lost/')
 def lost_assets():

@@ -4,6 +4,12 @@
 
 {% block content %}
 
+<div class="card mb-3">
+  <div class="card-body">
+    Weather: <b>{{weather["location"]}}</b> {{weather["temperature"]}}, {{weather["humidity"]}}, {{weather["description"]}}
+  </div>
+</div>
+
 {% for asset in assets %}
 <h3>{{asset["nickname"]}}</h3>
 [{{asset["timestamp"]}}]

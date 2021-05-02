@@ -30,3 +30,10 @@ DB_PATH = '/opt/domotricks.db'
 
 # Alerting
 HOLIDAY_ASSET_ID = '14_11_00a35d_4'
+
+# OpenWeatherMap API
+# https://openweathermap.org/current
+API_KEY = 'aaaaaaaaaaaaaaaaaaaaaaaaaaaa'
+LOCATION = '75012,fr'
+LOCATION_NICKNAME = 'Paris 12'
+LANG = 'fr'
