@@ -102,7 +102,13 @@ def lost_assets():
     """ Display lost assets """
     conn = SqliteCmd(settings.DB_PATH)
     assets = conn.get_lost_assets()
-    return render_template('lost_assets.html', lost_assets=assets)
+    for i, _ in enumerate(assets):
+        assets[i] = [x for x in assets[i]]
+        try:
+            assets[i][-1] = json.loads(assets[i][-1].replace("'", '"'))
+        except:
+            assets[i][-1] = [{'key': 'raw', 'value': assets[i][-1]}]
+    return render_template('lost_assets.html', lost_assets=reversed(assets))
 
 @APP.route('/my_assets/')
 def my_assets():

@@ -1,11 +1,25 @@
-{% extends "base.html" %}
+{% extends "base.html" %} {% block title %}Lost Assets{% endblock %} {% block content %}
 
-{% block title %}Lost Assets{% endblock %}
-
-{% block content %}
-
-{% for asset in lost_assets %}
-<li>{{asset}}</li>
-{% endfor %}
+<div class="d-flex flex-column align-items-stretch bg-white">
+  <a href="/" class="d-flex align-items-center flex-shrink-0 p-3 link-dark text-decoration-none border-bottom">
+    <svg class="bi me-2" width="30" height="24"><use xlink:href="#bootstrap"></use></svg>
+    <span class="fs-5 fw-semibold">List of lost assets</span>
+  </a>
+  <div class="list-group list-group-flush border-bottom scrollarea">
+    {% for asset in lost_assets %}
+    <a href="#" class="list-group-item list-group-item-action py-3 lh-tight">
+      <div class="d-flex w-100 align-items-center justify-content-between">
+        <strong class="mb-1">[{{asset[2]}}] {{asset[1]}}</strong>
+        <small>{{asset[0]}}</small>
+      </div>
+      <div class="col-10 mb-1 small">
+        {% for meta in asset[-1] %}
+        <li><b>{{meta["key"]}}</b>: {{meta["value"]}}</li>
+        {% endfor %}
+      </div>
+    </a>
+    {% endfor %}
+  </div>
+</div>
 
 {% endblock %}

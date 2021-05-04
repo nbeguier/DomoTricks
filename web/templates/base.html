@@ -14,75 +14,34 @@
 
   <body class="my-3 mx-3 bg-dark">
     <div class="col-lg-8 mx-auto p-3 py-md-5 bg-light rounded">
-      <header class="d-flex align-items-center pb-3 mb-5 border-bottom">
-        <a href="/" class="d-flex align-items-center text-dark text-decoration-none">
-          <span class="fs-4">DomoTricks</span>
-        </a>
-      </header>
-
-      <main>
-        <div class="row">
-          <div class="col-12 col-sm-4 col-md-3">
-            <ul class="nav nav-pills flex-column mb-auto">
+      <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="{{ url_for('index') }}">DomoTricks</a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
               <li class="nav-item">
-                <a href="{{ url_for('index') }}" class="nav-link link-dark" id="sidebar-/">
-                  <svg class="bi me-2" width="16" height="16"><use xlink:href="#home"></use></svg>
-                  Home
-                </a>
+                <a class="nav-link" href="{{ url_for('index') }}" id="sidebar-{{ url_for('index') }}">Home</a>
               </li>
-              <li>
-                <a href="{{ url_for('lost_assets') }}" class="nav-link link-dark" id="sidebar-/lost/">
-                  <svg class="bi me-2" width="16" height="16"><use xlink:href="#lost_assets"></use></svg>
-                  Lost assets
-                </a>
+              <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('lost_assets') }}" id="sidebar-{{ url_for('lost_assets') }}">Lost assets</a>
               </li>
-              <li>
-                <a href="{{ url_for('my_assets') }}" class="nav-link link-dark" id="sidebar-/my_assets/">
-                  <svg class="bi me-2" width="16" height="16"><use xlink:href="#my_assets"></use></svg>
-                  My assets
-                </a>
+              <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('my_assets') }}" id="sidebar-{{ url_for('my_assets') }}">My assets</a>
               </li>
-              <li>
-                <a href="{{ url_for('configuration') }}" class="nav-link link-dark" id="sidebar-/config/">
-                  <svg class="bi me-2" width="16" height="16"><use xlink:href="#configuration"></use></svg>
-                  Configuration
-                </a>
+              <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('configuration') }}" id="sidebar-{{ url_for('configuration') }}">Configuration</a>
               </li>
             </ul>
-            <hr>
           </div>
-          <div class="col px-4">
+        </div>
+      </nav>
+      <main>
+        <div class="row">
+          <div class="col-10 col-md-8 mx-auto px-4">
             {% block content %}{% endblock %}
-            <!--           <h1>Get started with Bootstrap</h1>
-          <p class="fs-5 col-md-8">Quickly and easily get started with Bootstrap's compiled, production-ready files with this barebones example featuring some basic HTML and helpful links. Download all our examples to get started.</p>
-
-          <div class="mb-5">
-            <a href="/docs/5.0/examples/" class="btn btn-primary btn-lg px-4">Download examples</a>
-          </div>
-
-          <hr class="col-3 col-md-2 mb-5" />
-
-          <div class="row g-5">
-            <div class="col-md-6">
-              <h2>Starter projects</h2>
-              <p>Ready to beyond the starter template? Check out these open source projects that you can quickly duplicate to a new GitHub repository.</p>
-              <ul class="icon-list">
-                <li><a href="https://github.com/twbs/bootstrap-npm-starter" rel="noopener" target="_blank">Bootstrap npm starter</a></li>
-                <li class="text-muted">Bootstrap Parcel starter (coming soon!)</li>
-              </ul>
-            </div>
-
-            <div class="col-md-6">
-              <h2>Guides</h2>
-              <p>Read more detailed instructions and documentation on using or contributing to Bootstrap.</p>
-              <ul class="icon-list">
-                <li><a href="/docs/5.0/getting-started/introduction/">Bootstrap quick start guide</a></li>
-                <li><a href="/docs/5.0/getting-started/webpack/">Bootstrap Webpack guide</a></li>
-                <li><a href="/docs/5.0/getting-started/parcel/">Bootstrap Parcel guide</a></li>
-                <li><a href="/docs/5.0/getting-started/build-tools/">Contributing to Bootstrap</a></li>
-              </ul>
-            </div>
- -->
           </div>
         </div>
       </main>
@@ -92,6 +51,7 @@
       DomoTricks team &middot; &copy; 2021
     </footer>
   </body>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js" integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf" crossorigin="anonymous"></script>
   <script>
     if (document.getElementById("sidebar-" + window.location.pathname)) {
       document.getElementById("sidebar-" + window.location.pathname).className = "nav-link active";
