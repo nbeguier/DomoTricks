@@ -22,9 +22,10 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 # Standard library
 import json
+import re
 
 # Third party library imports
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 from requests import Session
 
 # DomoTricks libraries
@@ -90,6 +91,7 @@ def index():
             if meta['key'] not in BLACKLIST:
                 metadata.append(meta)
         result.append({
+            'key': asset_key,
             'nickname': nickname,
             'type': asset_type,
             'timestamp': asset_data[0],
@@ -116,6 +118,29 @@ def my_assets():
     conn = SqliteCmd(settings.DB_PATH)
     assets = conn.get_my_assets()
     return render_template('my_assets.html', my_assets=assets)
+
+@APP.route('/asset/')
+def asset():
+    """ Display one assets """
+    conn = SqliteCmd(settings.DB_PATH)
+    asset_key = request.args.get('assetkey')
+    if not re.match('[a-f0-9_]+', asset_key):
+        return render_template('404.html'), 404
+    nickname = conn.get_asset_nickname(asset_key)
+    asset_data = conn.get_asset(asset_key)
+    for i, _ in enumerate(asset_data):
+        asset_data[i] = [x for x in asset_data[i]]
+        try:
+            asset_data[i][-1] = json.loads(asset_data[i][-1].replace("'", '"'))
+        except:
+            asset_data[i][-1] = [{'key': 'raw', 'value': asset_data[i][-1]}]
+        raw_metadata = asset_data[i][-1].copy()
+        for meta in raw_metadata:
+            if meta['key'] in BLACKLIST:
+                for k, _ in enumerate(asset_data[i][-1]):
+                    if asset_data[i][-1][k]['key'] == meta['key']:
+                        del asset_data[i][-1][k]
+    return render_template('asset.html', asset=reversed(asset_data), nickname=nickname)
 
 @APP.route('/config/')
 def configuration():

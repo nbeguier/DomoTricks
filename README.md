@@ -32,7 +32,7 @@ $ gunicorn server:APP -b 127.0.0.1:8080 --access-logfile /var/log/DomoTricks.log
 
 ```bash
 $ cat /etc/cron.d/domotricks
-* * * * * root <path>/DomoTricks/venv/bin/python <path>/DomoTricks/time_alerting.py
+* * * * * root <path>/DomoTricks/venv/bin/python <path>/DomoTricks/time_alerting.py 2>&1 | logger -t domotricks_time_alerting
 ```
 
 ### Manipulate database
