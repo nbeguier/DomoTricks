@@ -189,19 +189,31 @@ class SqliteCmd(object):
         fres = res.fetchone()[0]
         return fres == 1
 
-    def get_asset(self, asset_key):
+    def get_asset(self, asset_key, last_only=False):
         """
         Get asset
         """
         try:
-            res = self.cur.execute(
-            f'''
-            SELECT
-                timestamp, packettype, seqnb, metadata
-            FROM
-                asset_{asset_key}
-            ''')
-            return res.fetchall()
+            if last_only:
+                res = self.cur.execute(
+                f'''
+                SELECT
+                    timestamp, packettype, seqnb, metadata
+                FROM
+                    asset_{asset_key}
+                ORDER BY timestamp DESC
+                LIMIT 1
+                ''')
+                return res.fetchone()
+            else:
+                res = self.cur.execute(
+                f'''
+                SELECT
+                    timestamp, packettype, seqnb, metadata
+                FROM
+                    asset_{asset_key}
+                ''')
+                return res.fetchall()
         except sqlite3.OperationalError:
             return None
 

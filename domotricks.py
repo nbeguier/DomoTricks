@@ -28,9 +28,9 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 __author__ = 'Nicolas Béguier'
 __copyright__ = 'Copyright 2021, Nicolas Béguier'
 __license__ = 'GPL'
-__version__ = '1.0.0'
+__version__ = '1.0.1'
 __maintainer__ = 'Nicolas Béguier'
-__date__ = '$Date: 2021-04-130 08:43:00 +0100 (Fri, 30 Apr 2021) $'
+__date__ = '$Date: 2021-06-01 15:00:00 +0100 (Tue, 1 Jun 2021) $'
 
 # Standard library
 from codecs import decode as codecs_decode

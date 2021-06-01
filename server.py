@@ -20,6 +20,13 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 """
 
+__author__ = 'Nicolas Béguier'
+__copyright__ = 'Copyright 2021, Nicolas Béguier'
+__license__ = 'GPL'
+__version__ = '1.0.1'
+__maintainer__ = 'Nicolas Béguier'
+__date__ = '$Date: 2021-06-01 15:00:00 +0100 (Tue, 1 Jun 2021) $'
+
 # Standard library
 import json
 import re
@@ -80,11 +87,9 @@ def index():
         asset_key = asset[0]
         asset_type = asset[1]
         nickname = asset[2]
-        asset_data = conn.get_asset(asset_key)
+        asset_data = conn.get_asset(asset_key, last_only=True)
         if asset_data is None:
             continue
-        # Take the last one
-        asset_data = asset_data[-1]
         raw_metadata = json.loads(asset_data[3].replace("'", '"'))
         metadata = list()
         for meta in raw_metadata:
