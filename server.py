@@ -116,7 +116,7 @@ def lost_assets():
             assets[i][-1] = json.loads(assets[i][-1].replace("'", '"'))
         except:
             assets[i][-1] = [{'key': 'raw', 'value': assets[i][-1]}]
-    return render_template('lost_assets.html', lost_assets=reversed(assets))
+    return render_template('lost_assets.html', lost_assets=assets)
 
 @APP.route('/my_assets/')
 def my_assets():
@@ -146,7 +146,7 @@ def asset():
                 for k, _ in enumerate(asset_data[i][-1]):
                     if asset_data[i][-1][k]['key'] == meta['key']:
                         del asset_data[i][-1][k]
-    return render_template('asset.html', asset=reversed(asset_data), nickname=nickname)
+    return render_template('asset.html', asset=asset_data, nickname=nickname)
 
 @APP.route('/asset.csv')
 def asset_csv():

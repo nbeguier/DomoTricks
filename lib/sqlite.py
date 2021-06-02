@@ -292,6 +292,7 @@ class SqliteCmd(object):
             timestamp, assetkey, packettype, seqnb, metadata
         FROM
             lost
+        ORDER BY timestamp DESC
         ''')
         return res.fetchall()
 

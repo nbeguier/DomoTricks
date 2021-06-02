@@ -68,7 +68,10 @@ if ((/^[a-f0-9_]+$/.test(assetkey)) && (/^[a-z]+$/.test(period))) {
 
         // Now I can use this dataset:
         function(data) {
-
+            // Remove graph if no data available
+            if (data.length == 0) {
+                document.getElementById('asset_dataviz').remove()
+            }
             // Add X axis --> it is a date format
             const x = d3.scaleTime()
                 .domain(d3.extent(data, d => d.date))
@@ -101,6 +104,8 @@ if ((/^[a-f0-9_]+$/.test(assetkey)) && (/^[a-z]+$/.test(period))) {
 
 
         })
+} else {
+    height = 0;
 }
 
 </script>
