@@ -4,7 +4,11 @@
 
 {% block content %}
 
+<script src="https://d3js.org/d3.v6.js"></script>
+
 {{nickname}}
+
+<div id="asset_dataviz"></div>
 
 <div class="d-flex flex-column align-items-stretch bg-white">
   <a href="/" class="d-flex align-items-center flex-shrink-0 p-3 link-dark text-decoration-none border-bottom">
@@ -27,5 +31,78 @@
     {% endfor %}
   </div>
 </div>
+
+<script>
+// set the dimensions and margins of the graph
+const margin = {
+        top: 10,
+        right: 30,
+        bottom: 30,
+        left: 50
+    },
+    width = 460 - margin.left - margin.right,
+    height = 400 - margin.top - margin.bottom;
+
+// append the svg object to the body of the page
+const svg = d3.select("#asset_dataviz")
+    .append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+    .attr("transform", `translate(${margin.left},${margin.top})`);
+
+//Read the data
+const urlParams = new URLSearchParams(location.search);
+assetkey = urlParams.get('assetkey')
+period = urlParams.get('period')
+if ((/^[a-f0-9_]+$/.test(assetkey)) && (/^[a-z]+$/.test(period))) {
+    d3.csv("/asset.csv?assetkey=" + assetkey + "&period=" + period,
+
+        // When reading the csv, I must format variables:
+        d => {
+            return {
+                date: d3.timeParse("%Y-%m-%d %H:%M:%S")(d.date),
+                value: d.value
+            }
+        }).then(
+
+        // Now I can use this dataset:
+        function(data) {
+
+            // Add X axis --> it is a date format
+            const x = d3.scaleTime()
+                .domain(d3.extent(data, d => d.date))
+                .range([0, width]);
+            svg.append("g")
+                .attr("transform", `translate(0,  ${height+5})`)
+                .call(d3.axisBottom(x).ticks(5).tickSizeOuter(0));
+
+            // Add Y axis
+            const y = d3.scaleLinear()
+                .domain(d3.extent(data, d => +d.value))
+                .range([height, 0]);
+            svg.append("g")
+                .attr("transform", "translate(-5,0)")
+                .call(d3.axisLeft(y).tickSizeOuter(0));
+
+            svg.append("path")
+                .datum(data)
+                .attr("fill", "none")
+                .attr("stroke", "steelblue")
+                .attr("stroke-width", 1.5)
+                .attr("d", d3.line()
+                    .x(function(d) {
+                        return x(d.date)
+                    })
+                    .y(function(d) {
+                        return y(d.value)
+                    })
+                )
+
+
+        })
+}
+
+</script>
 
 {% endblock %}

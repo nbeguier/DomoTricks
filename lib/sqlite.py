@@ -215,6 +215,7 @@ class SqliteCmd(object):
                     asset_{asset_key}
                 WHERE
                     timestamp > ? AND timestamp < ?
+                ORDER BY timestamp DESC
                 ''', (timestamp_interval[0], timestamp_interval[1]))
                 return res.fetchall()
             else:
@@ -224,6 +225,7 @@ class SqliteCmd(object):
                     timestamp, packettype, seqnb, metadata
                 FROM
                     asset_{asset_key}
+                ORDER BY timestamp DESC
                 ''')
                 return res.fetchall()
         except sqlite3.OperationalError:

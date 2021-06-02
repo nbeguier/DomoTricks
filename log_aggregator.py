@@ -82,7 +82,7 @@ def main():
                         print(f'Error deleting asset {assetkey} logs...')
                         continue
                     print(f'Aggregating {assetkey} at {aggregated_date} {h:02}:00')
-                    conn.insert_asset(f'asset_{assetkey}', aggregated_date+f' {h:02}:01', datas[-1][1], datas[-1][2], '', '', str(duplicate_meta))
+                    conn.insert_asset(f'asset_{assetkey}', aggregated_date+f' {h:02}:00:01', datas[-1][1], datas[-1][2], '', '', str(duplicate_meta))
 
 if __name__ == '__main__':
     main()

@@ -28,6 +28,7 @@ __maintainer__ = 'Nicolas Béguier'
 __date__ = '$Date: 2021-06-01 15:00:00 +0100 (Tue, 1 Jun 2021) $'
 
 # Standard library
+from datetime import datetime, timedelta
 import json
 import re
 
@@ -146,6 +147,37 @@ def asset():
                     if asset_data[i][-1][k]['key'] == meta['key']:
                         del asset_data[i][-1][k]
     return render_template('asset.html', asset=reversed(asset_data), nickname=nickname)
+
+@APP.route('/asset.csv')
+def asset_csv():
+    """ return a CSV """
+    result = 'date,value'
+    conn = SqliteCmd(settings.DB_PATH)
+    asset_key = request.args.get('assetkey')
+    if not re.match('[a-f0-9_]+', asset_key):
+        return render_template('404.html'), 404
+    period = request.args.get('period')
+    now = datetime.now()
+    if period == 'hour':
+        timestamp_min = (now - timedelta(hours=1)).strftime('%Y-%m-%d %H:%M')
+    elif period == 'day':
+        timestamp_min = (now - timedelta(days=1)).strftime('%Y-%m-%d %H:%M')
+    elif period == 'week':
+        timestamp_min = (now - timedelta(weeks=1)).strftime('%Y-%m-%d %H:%M')
+    else:
+        return render_template('404.html'), 404
+    interval = [timestamp_min, now]
+    asset_data = conn.get_asset(asset_key, timestamp_interval=interval)
+    for i, _ in enumerate(asset_data):
+        asset_data[i] = [x for x in asset_data[i]]
+        try:
+            asset_data[i][-1] = json.loads(asset_data[i][-1].replace("'", '"'))
+        except:
+            asset_data[i][-1] = [{'key': 'raw', 'value': asset_data[i][-1]}]
+        for meta in asset_data[i][-1]:
+            if meta['key'] == 'Temperature':
+                result += f'\n{asset_data[i][0]},{meta["value"]}'
+    return result
 
 @APP.route('/config/')
 def configuration():

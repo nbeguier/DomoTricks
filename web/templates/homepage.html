@@ -12,7 +12,7 @@
 
 {% for asset in assets %}
 <h3>{{asset["nickname"]}}</h3>
-[{{asset["timestamp"]}}] <a href="./asset/?assetkey={{asset['key']}}" class="ms-3 link-warning"><ion-icon name="bar-chart"></ion-icon></a>
+[{{asset["timestamp"]}}] <a href="./asset/?assetkey={{asset['key']}}&period=day" class="ms-3 link-warning"><ion-icon name="bar-chart"></ion-icon></a>
 {% for meta in asset["metadata"] %}
 <li><b>{{meta["key"]}}</b>: {{meta["value"]}} {{meta["unit"]}}</li>
 {% endfor %}
