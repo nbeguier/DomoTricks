@@ -35,6 +35,13 @@ $ cat /etc/cron.d/domotricks
 * * * * * root <path>/DomoTricks/venv/bin/python <path>/DomoTricks/time_alerting.py 2>&1 | logger -t domotricks_time_alerting
 ```
 
+### Aggregating logs
+
+```bash
+$ cat /etc/cron.d/domotricks
+0 0 * * * root <path>/DomoTricks/venv/bin/python <path>/DomoTricks/log_aggregator.py 2>&1 | logger -t domotricks_log_aggregator
+```
+
 ### Manipulate database
 
 ```sql

@@ -189,9 +189,10 @@ class SqliteCmd(object):
         fres = res.fetchone()[0]
         return fres == 1
 
-    def get_asset(self, asset_key, last_only=False):
+    def get_asset(self, asset_key, last_only=False, timestamp_interval=[]):
         """
         Get asset
+        last_only and timestamp_interval are not compatible
         """
         try:
             if last_only:
@@ -205,6 +206,17 @@ class SqliteCmd(object):
                 LIMIT 1
                 ''')
                 return res.fetchone()
+            elif timestamp_interval:
+                res = self.cur.execute(
+                f'''
+                SELECT
+                    timestamp, packettype, seqnb, metadata
+                FROM
+                    asset_{asset_key}
+                WHERE
+                    timestamp > ? AND timestamp < ?
+                ''', (timestamp_interval[0], timestamp_interval[1]))
+                return res.fetchall()
             else:
                 res = self.cur.execute(
                 f'''
@@ -309,6 +321,22 @@ class SqliteCmd(object):
             return res.fetchall()
         except sqlite3.OperationalError:
             return None
+
+    def delete_asset_log(self, assetkey, timestamp_interval=[]):
+        """
+        Delete a timestamped interval of log
+        """
+        try:
+            res = self.cur.execute(
+            f'''
+            DELETE FROM
+                asset_{assetkey}
+            WHERE
+                timestamp > ? AND timestamp < ?
+            ''', (timestamp_interval[0], timestamp_interval[1]))
+            return True
+        except sqlite3.OperationalError:
+            return False
 
     def __del__(self):
         try:
