@@ -33,7 +33,7 @@ import json
 import re
 
 # Third party library imports
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, send_from_directory
 from requests import Session
 
 # DomoTricks libraries
@@ -188,6 +188,11 @@ def configuration():
 def page_not_found(_):
     """ Display error page """
     return render_template('404.html'), 404
+
+@APP.route('/favicon.png')
+def favicon():
+    return send_from_directory('web/static/images',
+        'favicon.png', mimetype='image/png')
 
 if __name__ == '__main__':
     APP.run(debug=False, host='0.0.0.0', port=5000)

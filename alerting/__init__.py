@@ -124,7 +124,7 @@ def door_during_holidays(nickname, metadata):
     holidays_data = conn.get_asset(settings.HOLIDAY_ASSET_ID)
     if holidays_data is None:
         return
-    holidays_metadata = json.loads(holidays_data[-1][3].replace("'", '"'))
+    holidays_metadata = json.loads(holidays_data[0][3].replace("'", '"'))
     is_holidays = get_metadata_value(holidays_metadata, 'Command') == 'On'
     if is_holidays and is_door_open:
         send_mail(
