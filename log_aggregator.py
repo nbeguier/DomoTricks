@@ -23,7 +23,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 __author__ = 'Nicolas Béguier'
 __copyright__ = 'Copyright 2021, Nicolas Béguier'
 __license__ = 'GPL'
-__version__ = '1.0.1'
+__version__ = '1.0.2'
 __maintainer__ = 'Nicolas Béguier'
 __date__ = '$Date: 2021-06-01 15:00:00 +0100 (Tue, 1 Jun 2021) $'
 
@@ -38,11 +38,11 @@ import settings
 # Debug
 # from pdb import set_trace as st
 
-def main():
+def aggregate_log_per_hour():
     """
-    Main function
+    After one day, logs are aggregated per hour
     """
-    # TODO
+    print('> aggregate_log_per_hour')
     conn = SqliteCmd(settings.DB_PATH)
     assets = conn.get_my_assets()
     now = datetime.now()
@@ -84,6 +84,17 @@ def main():
                     print(f'Aggregating {assetkey} at {aggregated_date} {h:02}:00')
                     conn.insert_asset(f'asset_{assetkey}', aggregated_date+f' {h:02}:00:01', datas[-1][1], datas[-1][2], '', '', str(duplicate_meta))
 
-if __name__ == '__main__':
-    main()
+def remove_old_lost_assets():
+    """
+    Remove lost assets after a week without updates
+    """
+    print('> remove_old_lost_assets')
+    now = datetime.now()
+    timestamp = (now - timedelta(weeks=1)).strftime('%Y-%m-%d')
+    print(f'Remove all before {timestamp}')
+    conn = SqliteCmd(settings.DB_PATH)
+    conn.delete_lost_asset(timestamp)
 
+if __name__ == '__main__':
+    aggregate_log_per_hour()
+    remove_old_lost_assets()

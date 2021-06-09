@@ -357,6 +357,23 @@ class SqliteCmd(object):
         except sqlite3.OperationalError:
             return False
 
+    def delete_lost_asset(self, timestamp):
+        """
+        Delete lost asset for all asset older than timestamp
+        """
+        try:
+            res = self.cur.execute(
+            '''
+            DELETE FROM
+                lost
+            WHERE
+                timestamp < ?
+            ''', (timestamp,))
+            self.conn.commit()
+            return True
+        except sqlite3.OperationalError:
+            return False
+
     def __del__(self):
         try:
             self.cur.close()
