@@ -144,30 +144,46 @@ class SqliteCmd(object):
         """
         Insert new entry infos
         """
-        # TODO: drop asset if count > 30
-        self.cur.execute(
+        is_exists = self.cur.execute(
         '''
-        INSERT
-        or IGNORE into lost (
-            assetkey,
-            timestamp,
-            packettype,
-            packettypeid,
-            subtype,
-            seqnb,
-            metadata
-        )
-        VALUES
-            (
-                ?,
-                ?,
-                ?,
-                ?,
-                ?,
-                ?,
-                ?
+        SELECT count(*)
+        FROM lost
+        WHERE assetkey = ?
+        ''', (asset_key,)).fetchone()
+        if is_exists[0] == 1:
+            self.cur.execute(
+            '''
+            UPDATE lost
+            SET
+                timestamp = ?,
+                metadata = ?
+            WHERE
+                assetkey = ?
+            ''', (Timestamp, Metadata, asset_key))
+        else:
+            self.cur.execute(
+            '''
+            INSERT
+            or IGNORE into lost (
+                assetkey,
+                timestamp,
+                packettype,
+                packettypeid,
+                subtype,
+                seqnb,
+                metadata
             )
-        ''', (asset_key, Timestamp, PacketType, PacketTypeId, Subtype, SeqNb, Metadata))
+            VALUES
+                (
+                    ?,
+                    ?,
+                    ?,
+                    ?,
+                    ?,
+                    ?,
+                    ?
+                )
+            ''', (asset_key, Timestamp, PacketType, PacketTypeId, Subtype, SeqNb, Metadata))
         self.conn.commit()
 
     def is_registered_asset(self, asset_key):
