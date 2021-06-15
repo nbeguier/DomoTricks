@@ -215,7 +215,35 @@ def asset_csv():
 @APP.route('/config/')
 def configuration():
     """ Display configuration """
-    return render_template('config.html')
+    conn = SqliteCmd(settings.DB_PATH)
+    # result = {'device_alerting': [], ''}
+    device_alerting = conn.get_device_alerting()
+    for i, k in enumerate(device_alerting):
+        device_alerting[i] = {
+            'assetkey': k[0],
+            'function': k[1],
+            'nickname': conn.get_asset_nickname(k[0])}
+    time_alerting = conn.get_time_alerting()
+    for i, k in enumerate(time_alerting):
+        time_alerting[i] = {
+            'assetkey': k[0],
+            'function': k[1].split(':')[0],
+            'time': ':'.join(k[1].split(':')[1:]),
+            'nickname': conn.get_asset_nickname(k[0])}
+    config = {
+        'GMAIL_USER': settings.GMAIL_USER,
+        'MAIL_RECIPIENTS': settings.MAIL_RECIPIENTS,
+        'DB_PATH': settings.DB_PATH,
+        'HOLIDAY_ASSET_ID': settings.HOLIDAY_ASSET_ID,
+        'LOCATION': settings.LOCATION,
+        'LOCATION_NICKNAME': settings.LOCATION_NICKNAME,
+        'LANG': settings.LANG
+    }
+    return render_template(
+        'config.html',
+        device_alerting=device_alerting,
+        time_alerting=time_alerting,
+        config=config)
 
 @APP.errorhandler(404)
 def page_not_found(_):

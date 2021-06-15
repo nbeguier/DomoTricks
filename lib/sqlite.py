@@ -161,7 +161,10 @@ class SqliteCmd(object):
         WHERE
             assetkey = ?
         ''', (asset_key,))
-        return res.fetchone()[0]
+        fetch = res.fetchone()
+        if fetch:
+            return fetch[0]
+        return 'Unknown'
 
     def insert_my_asset(self, asset_key, packettype, packettypeid, subtype, nickname):
         '''
@@ -421,11 +424,20 @@ class SqliteCmd(object):
 
     ## DEVICE ALERTING
 
-    def get_device_alerting(self, asset_key):
+    def get_device_alerting(self, asset_key=None):
         """
         Get asset device alerting
         """
         try:
+            if asset_key is None:
+                res = self.cur.execute(
+                '''
+                SELECT
+                    assetkey, functions
+                FROM
+                    device_alerting
+                ''')
+                return res.fetchall()
             res = self.cur.execute(
             '''
             SELECT

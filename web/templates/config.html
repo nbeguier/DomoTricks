@@ -4,4 +4,47 @@
 
 {% block content %}
 
+<h3>Device alerting</h3>
+<div class="row row-cols-1 row-cols-md-2 g-4">
+{% for asset in device_alerting %}
+  <div class="col">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">{{asset['nickname']}}</h5>
+        <h6 class="card-subtitle mb-2 text-muted">{{asset['assetkey']}}</h6>
+        <p class="card-text">Function: {{asset['function']}}</p>
+      </div>
+    </div>
+  </div>
+{% endfor %}
+</div>
+
+<br>
+
+<h3>Time alerting</h3>
+<div class="row row-cols-1 row-cols-md-2 g-4">
+{% for asset in time_alerting %}
+  <div class="col">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">{{asset['nickname']}}</h5>
+        <h6 class="card-subtitle mb-2 text-muted">{{asset['assetkey']}}</h6>
+        <p class="card-text">Function: {{asset['function']}}</p>
+      </div>
+      <div class="card-footer">
+        <small class="text-muted">Time: {{asset['time']}}</small>
+      </div>
+    </div>
+  </div>
+{% endfor %}
+</div>
+
+<br>
+
+<h3>Settings</h3>
+{% for key in config %}
+<b>{{key}}</b>: {{config[key]}}
+<br>
+{% endfor %}
+
 {% endblock %}
