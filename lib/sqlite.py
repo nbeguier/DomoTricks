@@ -34,6 +34,8 @@ class SqliteCmd(object):
         self.conn = sqlite3.connect(DBfile)
         self.cur = self.conn.cursor()
 
+    ## TABLE CREATION
+
     def create_asset_table(self, asset_key):
         """
         Creating Asset table if not exist
@@ -113,6 +115,176 @@ class SqliteCmd(object):
             )
         ''')
 
+    ## MY ASSETS
+
+    def get_asset_key(self, nickname):
+        """
+        Get asset from nickname
+        """
+        try:
+            res = self.cur.execute(
+            '''
+            SELECT
+                assetkey
+            FROM
+                my_assets
+            WHERE
+                nickname = ?
+            ''', (nickname,))
+            return res.fetchone()
+        except sqlite3.OperationalError:
+            return None
+
+    def get_my_assets(self):
+        """
+        Get all my assets
+        """
+        res = self.cur.execute(
+        '''
+        SELECT
+            assetkey, packettype, nickname
+        FROM
+            my_assets
+        ''')
+        return res.fetchall()
+
+    def get_asset_nickname(self, asset_key):
+        """
+        Get asset nickname
+        """
+        res = self.cur.execute(
+        '''
+        SELECT
+            nickname
+        FROM
+            my_assets
+        WHERE
+            assetkey = ?
+        ''', (asset_key,))
+        return res.fetchone()[0]
+
+    def insert_my_asset(self, asset_key, packettype, packettypeid, subtype, nickname):
+        '''
+        Insert new asset in "my_assets"
+        '''
+        self.cur.execute(
+            '''
+            INSERT INTO my_assets
+            (
+                assetkey,
+                packettype,
+                packettypeid,
+                subtype,
+                nickname
+            ) VALUES
+            (
+                ?,
+                ?,
+                ?,
+                ?,
+                ?
+            )
+            ''', (asset_key, packettype, packettypeid, subtype, nickname))
+        self.conn.commit()
+
+    def update_my_asset_nickname(self, assetkey, nickname):
+        """
+        Edit an asset nickname
+        """
+        try:
+            self.cur.execute(
+            '''
+            UPDATE
+                my_assets
+            SET
+                nickname = ?
+            WHERE
+                assetkey = ?
+            ''', (nickname, assetkey))
+            self.conn.commit()
+            return True
+        except sqlite3.OperationalError:
+            return False
+
+    def delete_my_asset(self, assetkey):
+        """
+        Delete an assetkey from my_assets
+        """
+        try:
+            self.cur.execute(
+            '''
+            DELETE FROM
+                my_assets
+            WHERE
+                assetkey = ?
+            ''', (assetkey,))
+            self.conn.commit()
+            return True
+        except sqlite3.OperationalError:
+            return False
+
+    def is_registered_asset(self, asset_key):
+        """
+        Verify if asset is registred
+        """
+        res = self.cur.execute(
+        '''
+        SELECT
+            EXISTS (
+                SELECT
+                    1
+                FROM
+                    my_assets
+                WHERE
+                    assetkey = ?
+            )
+        ''', (asset_key,))
+        fres = res.fetchone()[0]
+        return fres == 1
+
+    ## ASSET
+
+    def get_asset(self, asset_key, last_only=False, timestamp_interval=[]):
+        """
+        Get asset
+        last_only and timestamp_interval are not compatible
+        """
+        try:
+            if last_only:
+                res = self.cur.execute(
+                f'''
+                SELECT
+                    timestamp, packettype, seqnb, metadata
+                FROM
+                    asset_{asset_key}
+                ORDER BY timestamp DESC
+                LIMIT 1
+                ''')
+                return res.fetchone()
+            if timestamp_interval:
+                res = self.cur.execute(
+                f'''
+                SELECT
+                    timestamp, packettype, seqnb, metadata
+                FROM
+                    asset_{asset_key}
+                WHERE
+                    timestamp > ? AND timestamp < ?
+                ORDER BY timestamp DESC
+                ''', (timestamp_interval[0], timestamp_interval[1]))
+                return res.fetchall()
+            res = self.cur.execute(
+            f'''
+            SELECT
+                timestamp, packettype, seqnb, metadata
+            FROM
+                asset_{asset_key}
+            ORDER BY timestamp DESC
+            ''')
+            return res.fetchall()
+        except sqlite3.OperationalError:
+            return None
+
     def insert_asset(self, table_name, Timestamp, PacketType, PacketTypeId, Subtype, SeqNb, Metadata):
         """
         Insert new entry infos
@@ -139,6 +311,38 @@ class SqliteCmd(object):
             )
         ''', (Timestamp, PacketType, PacketTypeId, Subtype, SeqNb, Metadata))
         self.conn.commit()
+
+    def delete_asset_log(self, assetkey, timestamp_interval=[]):
+        """
+        Delete a timestamped interval of log
+        """
+        try:
+            self.cur.execute(
+            f'''
+            DELETE FROM
+                asset_{assetkey}
+            WHERE
+                timestamp > ? AND timestamp < ?
+            ''', (timestamp_interval[0], timestamp_interval[1]))
+            return True
+        except sqlite3.OperationalError:
+            return False
+
+    ## LOST ASSETS
+
+    def get_lost_assets(self):
+        """
+        Get all lost assets
+        """
+        res = self.cur.execute(
+        '''
+        SELECT
+            timestamp, assetkey, packettype, seqnb, metadata
+        FROM
+            lost
+        ORDER BY timestamp DESC
+        ''')
+        return res.fetchall()
 
     def insert_lost_asset(self, asset_key, Timestamp, PacketType, PacketTypeId, Subtype, SeqNb, Metadata):
         """
@@ -186,201 +390,6 @@ class SqliteCmd(object):
             ''', (asset_key, Timestamp, PacketType, PacketTypeId, Subtype, SeqNb, Metadata))
         self.conn.commit()
 
-    def insert_my_asset(self, asset_key, packettype, packettypeid, subtype, nickname):
-        '''
-        Insert new asset in "my_assets"
-        '''
-        self.cur.execute(
-            '''
-            INSERT INTO my_assets
-            (
-                assetkey,
-                packettype,
-                packettypeid,
-                subtype,
-                nickname
-            ) VALUES
-            (
-                ?,
-                ?,
-                ?,
-                ?,
-                ?
-            )
-            ''', (asset_key, packettype, packettypeid, subtype, nickname))
-        self.conn.commit()
-
-    def is_registered_asset(self, asset_key):
-        """
-        Verify if asset is registred
-        """
-        res = self.cur.execute(
-        '''
-        SELECT
-            EXISTS (
-                SELECT
-                    1
-                FROM
-                    my_assets
-                WHERE
-                    assetkey = ?
-            )
-        ''', (asset_key,))
-        fres = res.fetchone()[0]
-        return fres == 1
-
-    def get_asset(self, asset_key, last_only=False, timestamp_interval=[]):
-        """
-        Get asset
-        last_only and timestamp_interval are not compatible
-        """
-        try:
-            if last_only:
-                res = self.cur.execute(
-                f'''
-                SELECT
-                    timestamp, packettype, seqnb, metadata
-                FROM
-                    asset_{asset_key}
-                ORDER BY timestamp DESC
-                LIMIT 1
-                ''')
-                return res.fetchone()
-            elif timestamp_interval:
-                res = self.cur.execute(
-                f'''
-                SELECT
-                    timestamp, packettype, seqnb, metadata
-                FROM
-                    asset_{asset_key}
-                WHERE
-                    timestamp > ? AND timestamp < ?
-                ORDER BY timestamp DESC
-                ''', (timestamp_interval[0], timestamp_interval[1]))
-                return res.fetchall()
-            else:
-                res = self.cur.execute(
-                f'''
-                SELECT
-                    timestamp, packettype, seqnb, metadata
-                FROM
-                    asset_{asset_key}
-                ORDER BY timestamp DESC
-                ''')
-                return res.fetchall()
-        except sqlite3.OperationalError:
-            return None
-
-    def get_asset_key(self, nickname):
-        """
-        Get asset from nickname
-        """
-        try:
-            res = self.cur.execute(
-            '''
-            SELECT
-                assetkey
-            FROM
-                my_assets
-            WHERE
-                nickname = ?
-            ''', (nickname,))
-            return res.fetchone()
-        except sqlite3.OperationalError:
-            return None
-
-    def get_asset_nickname(self, asset_key):
-        """
-        Get asset nickname
-        """
-        res = self.cur.execute(
-        '''
-        SELECT
-            nickname
-        FROM
-            my_assets
-        WHERE
-            assetkey = ?
-        ''', (asset_key,))
-        return res.fetchone()[0]
-
-    def get_device_alerting(self, asset_key):
-        """
-        Get asset device alerting
-        """
-        try:
-            res = self.cur.execute(
-            '''
-            SELECT
-                functions
-            FROM
-                device_alerting
-            WHERE
-                assetkey = ?
-            ''', (asset_key,))
-            return res.fetchone()
-        except sqlite3.OperationalError:
-            return None
-
-    def get_lost_assets(self):
-        """
-        Get all lost assets
-        """
-        res = self.cur.execute(
-        '''
-        SELECT
-            timestamp, assetkey, packettype, seqnb, metadata
-        FROM
-            lost
-        ORDER BY timestamp DESC
-        ''')
-        return res.fetchall()
-
-    def get_my_assets(self):
-        """
-        Get all my assets
-        """
-        res = self.cur.execute(
-        '''
-        SELECT
-            assetkey, packettype, nickname
-        FROM
-            my_assets
-        ''')
-        return res.fetchall()
-
-    def get_time_alerting(self):
-        """
-        Get time alerting
-        """
-        try:
-            res = self.cur.execute(
-            '''
-            SELECT
-                assetkey, functions
-            FROM
-                time_alerting
-            ''')
-            return res.fetchall()
-        except sqlite3.OperationalError:
-            return None
-
-    def delete_asset_log(self, assetkey, timestamp_interval=[]):
-        """
-        Delete a timestamped interval of log
-        """
-        try:
-            self.cur.execute(
-            f'''
-            DELETE FROM
-                asset_{assetkey}
-            WHERE
-                timestamp > ? AND timestamp < ?
-            ''', (timestamp_interval[0], timestamp_interval[1]))
-            return True
-        except sqlite3.OperationalError:
-            return False
-
     def delete_lost_asset(self, timestamp=None, asset_key=None):
         """
         Delete lost asset for all asset older than timestamp or directly an assetkey
@@ -410,41 +419,43 @@ class SqliteCmd(object):
         except sqlite3.OperationalError:
             return False
 
-    def delete_my_asset(self, assetkey):
-        """
-        Delete an assetkey from my_assets
-        """
-        try:
-            self.cur.execute(
-            '''
-            DELETE FROM
-                my_assets
-            WHERE
-                assetkey = ?
-            ''', (assetkey,))
-            self.conn.commit()
-            return True
-        except sqlite3.OperationalError:
-            return False
+    ## DEVICE ALERTING
 
-    def update_my_asset_nickname(self, assetkey, nickname):
+    def get_device_alerting(self, asset_key):
         """
-        Edit an asset nickname
+        Get asset device alerting
         """
         try:
-            self.cur.execute(
+            res = self.cur.execute(
             '''
-            UPDATE
-                my_assets
-            SET
-                nickname = ?
+            SELECT
+                functions
+            FROM
+                device_alerting
             WHERE
                 assetkey = ?
-            ''', (nickname, assetkey))
-            self.conn.commit()
-            return True
+            ''', (asset_key,))
+            return res.fetchone()
         except sqlite3.OperationalError:
-            return False
+            return None
+
+    ## TIME ALERTING
+
+    def get_time_alerting(self):
+        """
+        Get time alerting
+        """
+        try:
+            res = self.cur.execute(
+            '''
+            SELECT
+                assetkey, functions
+            FROM
+                time_alerting
+            ''')
+            return res.fetchall()
+        except sqlite3.OperationalError:
+            return None
 
     def __del__(self):
         try:
