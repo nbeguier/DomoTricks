@@ -125,6 +125,39 @@ def my_assets():
     assets = conn.get_my_assets()
     return render_template('my_assets.html', my_assets=assets)
 
+@APP.route('/my_assets/add/')
+def add_my_assets():
+    """ Add an asset """
+    conn = SqliteCmd(settings.DB_PATH)
+    asset_key = request.args.get('assetkey')
+    if not re.match('[a-f0-9_]+', asset_key):
+        return render_template('404.html'), 404
+    packettype = request.args.get('packettype')
+    conn.insert_my_asset(asset_key, packettype, '', '', asset_key)
+    conn.delete_lost_asset(asset_key=asset_key)
+    return my_assets()
+
+@APP.route('/my_assets/delete/')
+def delete_my_assets():
+    """ Delete an asset """
+    conn = SqliteCmd(settings.DB_PATH)
+    asset_key = request.args.get('assetkey')
+    if not re.match('[a-f0-9_]+', asset_key):
+        return render_template('404.html'), 404
+    conn.delete_my_asset(asset_key)
+    return my_assets()
+
+@APP.route('/my_assets/edit/')
+def edit_my_assets():
+    """ Edit an asset """
+    conn = SqliteCmd(settings.DB_PATH)
+    asset_key = request.args.get('assetkey')
+    if not re.match('[a-f0-9_]+', asset_key):
+        return render_template('404.html'), 404
+    nickname = request.args.get('nickname')
+    conn.update_my_asset_nickname(asset_key, nickname)
+    return my_assets()
+
 @APP.route('/asset/')
 def asset():
     """ Display one assets """

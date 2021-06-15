@@ -7,9 +7,10 @@
   </a>
   <div class="list-group list-group-flush border-bottom scrollarea">
     {% for asset in lost_assets %}
-    <a href="#" class="list-group-item list-group-item-action py-3 lh-tight">
+    <span class="list-group-item list-group-item-action py-3 lh-tight">
       <div class="d-flex w-100 align-items-center justify-content-between">
-        <strong class="mb-1">[{{asset[2]}}] {{asset[1]}}</strong>
+        <span><strong class="mb-1">[{{asset[2]}}] {{asset[1]}}</strong><a href="/my_assets/add/?packettype={{asset[2]}}&assetkey={{asset[1]}}" class="ms-3 link-primary"><ion-icon name="add-circle-outline"></ion-icon></a>
+</span>
         <small>{{asset[0]}}</small>
       </div>
       <div class="col-10 mb-1 small">
@@ -17,7 +18,7 @@
         <li><b>{{meta["key"]}}</b>: {{meta["value"]}}</li>
         {% endfor %}
       </div>
-    </a>
+    </span>
     {% endfor %}
   </div>
 </div>

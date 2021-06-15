@@ -186,6 +186,30 @@ class SqliteCmd(object):
             ''', (asset_key, Timestamp, PacketType, PacketTypeId, Subtype, SeqNb, Metadata))
         self.conn.commit()
 
+    def insert_my_asset(self, asset_key, packettype, packettypeid, subtype, nickname):
+        '''
+        Insert new asset in "my_assets"
+        '''
+        self.cur.execute(
+            '''
+            INSERT INTO my_assets
+            (
+                assetkey,
+                packettype,
+                packettypeid,
+                subtype,
+                nickname
+            ) VALUES
+            (
+                ?,
+                ?,
+                ?,
+                ?,
+                ?
+            )
+            ''', (asset_key, packettype, packettypeid, subtype, nickname))
+        self.conn.commit()
+
     def is_registered_asset(self, asset_key):
         """
         Verify if asset is registred
@@ -346,7 +370,7 @@ class SqliteCmd(object):
         Delete a timestamped interval of log
         """
         try:
-            res = self.cur.execute(
+            self.cur.execute(
             f'''
             DELETE FROM
                 asset_{assetkey}
@@ -357,18 +381,66 @@ class SqliteCmd(object):
         except sqlite3.OperationalError:
             return False
 
-    def delete_lost_asset(self, timestamp):
+    def delete_lost_asset(self, timestamp=None, asset_key=None):
         """
-        Delete lost asset for all asset older than timestamp
+        Delete lost asset for all asset older than timestamp or directly an assetkey
         """
         try:
-            res = self.cur.execute(
+            if timestamp is not None:
+                self.cur.execute(
+                '''
+                DELETE FROM
+                    lost
+                WHERE
+                    timestamp < ?
+                ''', (timestamp,))
+                self.conn.commit()
+                return True
+            if asset_key is not None:
+                self.cur.execute(
+                '''
+                DELETE FROM
+                    lost
+                WHERE
+                    assetkey = ?
+                ''', (asset_key,))
+                self.conn.commit()
+                return True
+            return False
+        except sqlite3.OperationalError:
+            return False
+
+    def delete_my_asset(self, assetkey):
+        """
+        Delete an assetkey from my_assets
+        """
+        try:
+            self.cur.execute(
             '''
             DELETE FROM
-                lost
+                my_assets
             WHERE
-                timestamp < ?
-            ''', (timestamp,))
+                assetkey = ?
+            ''', (assetkey,))
+            self.conn.commit()
+            return True
+        except sqlite3.OperationalError:
+            return False
+
+    def update_my_asset_nickname(self, assetkey, nickname):
+        """
+        Edit an asset nickname
+        """
+        try:
+            self.cur.execute(
+            '''
+            UPDATE
+                my_assets
+            SET
+                nickname = ?
+            WHERE
+                assetkey = ?
+            ''', (nickname, assetkey))
             self.conn.commit()
             return True
         except sqlite3.OperationalError:

@@ -93,7 +93,7 @@ def remove_old_lost_assets():
     timestamp = (now - timedelta(weeks=1)).strftime('%Y-%m-%d')
     print(f'Remove all before {timestamp}')
     conn = SqliteCmd(settings.DB_PATH)
-    conn.delete_lost_asset(timestamp)
+    conn.delete_lost_asset(timestamp=timestamp)
 
 if __name__ == '__main__':
     aggregate_log_per_hour()
