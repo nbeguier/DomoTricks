@@ -94,7 +94,7 @@ def report_temperature(nickname, _, hours=12):
     min_temperature = 256
     now = datetime.datetime.now()
     limit_time = now - datetime.timedelta(hours=hours)
-    for i in range(len(asset_data)-1, 0, -1):
+    for i in range(len(asset_data)):
         timestamp = datetime.datetime.strptime(asset_data[i][0], '%Y-%m-%d %H:%M:%S')
         if timestamp < limit_time:
             break

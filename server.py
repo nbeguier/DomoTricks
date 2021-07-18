@@ -245,6 +245,17 @@ def configuration():
         time_alerting=time_alerting,
         config=config)
 
+@APP.route('/config/time_alerting')
+def config_time_alerting():
+    """ Edit time_alerting configuration """
+    conn = SqliteCmd(settings.DB_PATH)
+    asset_key_old = request.args.get('assetkey_old')
+    asset_key_new = request.args.get('assetkey_new')
+    if not re.match('[a-f0-9_]+', asset_key_old) or not re.match('[a-f0-9_]+', asset_key_new):
+        return render_template('404.html'), 404
+    conn.update_timealerting_asssetkey(asset_key_old, asset_key_new)
+    return configuration()
+
 @APP.errorhandler(404)
 def page_not_found(_):
     """ Display error page """

@@ -469,6 +469,25 @@ class SqliteCmd(object):
         except sqlite3.OperationalError:
             return None
 
+    def update_timealerting_asssetkey(self, old_asset, new_asset):
+        """
+        Update the assetkey of a time alert
+        """
+        try:
+            self.cur.execute(
+            '''
+            UPDATE
+                time_alerting
+            SET
+                assetkey = ?
+            WHERE
+                assetkey = ?
+            ''', (new_asset, old_asset))
+            self.conn.commit()
+            return True
+        except sqlite3.OperationalError:
+            return False
+
     def __del__(self):
         try:
             self.cur.close()
