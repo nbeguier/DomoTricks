@@ -62,8 +62,8 @@ def main():
             if asset_data is None:
                 print(f'Asset "{nickname}" ({assetkey}) is empty...')
                 continue
-            # Apply function on the latest (-1) metadata (3)
-            metadata = json.loads(asset_data[-1][3].replace("'", '"'))
+            # Apply function on the most recent element (0) metadata (3)
+            metadata = json.loads(asset_data[0][3].replace("'", '"'))
             getattr(alerting, function_name)(nickname, metadata)
 
 if __name__ == '__main__':
