@@ -11,10 +11,17 @@
 <div id="asset_dataviz"></div>
 
 <div class="d-flex flex-column align-items-stretch bg-white">
-  <a href="/" class="d-flex align-items-center flex-shrink-0 p-3 link-dark text-decoration-none border-bottom">
-    <svg class="bi me-2" width="30" height="24"><use xlink:href="#bootstrap"></use></svg>
-    <span class="fs-5 fw-semibold">List of asset events</span>
-  </a>
+  <svg class="bi me-2" width="30" height="24"><use xlink:href="#bootstrap"></use></svg>
+  <div class="btn-toolbar mb-4" role="toolbar" aria-label="Toolbar with button groups">
+    <div class="btn-group me-2" role="group" aria-label="First group">
+      <button type="button" class="btn btn-secondary" onclick="Redirect('hour')">Hour</button>
+      <button type="button" class="btn btn-secondary" onclick="Redirect('day')">Day</button>
+      <button type="button" class="btn btn-secondary" onclick="Redirect('week')">Week</button>
+      <button type="button" class="btn btn-secondary" onclick="Redirect('month')">Month</button>
+      <button type="button" class="btn btn-secondary" onclick="Redirect('year')">Year</button>
+    </div>
+  </div>
+  <h5>List of asset events</h5>
   <div class="list-group list-group-flush border-bottom scrollarea">
     {% for event in asset %}
     <a href="#" class="list-group-item list-group-item-action py-3 lh-tight">
@@ -106,6 +113,10 @@ if ((/^[a-f0-9_]+$/.test(assetkey)) && (/^[a-z]+$/.test(period))) {
         })
 } else {
     height = 0;
+}
+
+function Redirect(period) {
+  location.search = "?assetkey="+assetkey+"&period="+period;
 }
 
 </script>

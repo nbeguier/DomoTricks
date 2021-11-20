@@ -197,6 +197,10 @@ def asset_csv():
         timestamp_min = (now - timedelta(days=1)).strftime('%Y-%m-%d %H:%M')
     elif period == 'week':
         timestamp_min = (now - timedelta(weeks=1)).strftime('%Y-%m-%d %H:%M')
+    elif period == 'month':
+        timestamp_min = (now - timedelta(days=30)).strftime('%Y-%m-%d %H:%M')
+    elif period == 'year':
+        timestamp_min = (now - timedelta(days=365)).strftime('%Y-%m-%d %H:%M')
     else:
         return render_template('404.html'), 404
     interval = [timestamp_min, now]
