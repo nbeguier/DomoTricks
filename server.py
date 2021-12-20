@@ -37,6 +37,7 @@ from flask import Flask, render_template, request, send_from_directory
 from requests import Session
 
 # DomoTricks libraries
+import alerting
 from lib.sqlite import SqliteCmd
 import settings
 
@@ -211,15 +212,22 @@ def asset_entry():
         packettypeid = asset_key.split('_')[0]
         subtype = asset_key.split('_')[1]
         seqnb = last_entry[2]
-        metadata = json.loads(last_entry[3].replace("'", '"'))
+        metadata_dict = json.loads(last_entry[3].replace("'", '"'))
     except:
         return render_template('404.html'), 404
-    for meta in metadata:
+    for meta in metadata_dict:
         if meta['key'] == key:
             meta['value'] = value
-    metadata = json.dumps(metadata)
+    metadata = json.dumps(metadata_dict)
     # Insert the entry in the database
     conn.insert_asset(table_name, timestamp, packettype, packettypeid, subtype, seqnb, metadata)
+    # Trigger alerts
+    functions = conn.get_device_alerting(asset_key)
+    if functions is not None:
+        for function in functions[0].split('|'):
+            if not hasattr(alerting, function):
+                continue
+            getattr(alerting, function)(conn.get_asset_nickname(asset_key), metadata_dict)
     return index()
 
 
