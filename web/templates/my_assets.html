@@ -7,7 +7,7 @@
 {% for asset in my_assets %}
 <h3>{{asset[2]}}</h3>
 <b>[{{asset[1]}}]</b>
-[{{asset[0]}}] <a class="ms-3 link-secondary" onclick="document.getElementById('{{asset[0]}}-nickname').hidden = false"><ion-icon name="create"></ion-icon></a> <a href="/mu_assets/delete/?assetkey={{asset[0]}}" class="ms-3 link-danger"><ion-icon name="trash"></ion-icon></a>
+[{{asset[0]}}] <a class="ms-3 link-secondary" onclick="document.getElementById('{{asset[0]}}-nickname').hidden = false"><ion-icon name="create"></ion-icon></a> <a href="/my_assets/delete/?assetkey={{asset[0]}}" class="ms-3 link-danger"><ion-icon name="trash"></ion-icon></a>
 <br>
 <form action="/my_assets/edit/" class="row g-3" id="{{asset[0]}}-nickname" hidden>
   <div class="col-auto">
