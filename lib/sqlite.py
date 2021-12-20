@@ -290,7 +290,7 @@ class SqliteCmd(object):
 
     def insert_asset(self, table_name, Timestamp, PacketType, PacketTypeId, Subtype, SeqNb, Metadata):
         """
-        Insert new entry infos
+        Insert new entry in an existing asset
         """
         self.cur.execute(
         f'''

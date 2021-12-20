@@ -23,9 +23,9 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 __author__ = 'Nicolas Béguier'
 __copyright__ = 'Copyright 2021, Nicolas Béguier'
 __license__ = 'GPL'
-__version__ = '1.0.2'
+__version__ = '1.0.3'
 __maintainer__ = 'Nicolas Béguier'
-__date__ = '$Date: 2021-06-01 15:00:00 +0100 (Tue, 1 Jun 2021) $'
+__date__ = '$Date: 2021-12-20 15:00:00 +0100 (Tue, 1 Jun 2021) $'
 
 # Standard library
 from datetime import datetime, timedelta
@@ -120,14 +120,14 @@ def lost_assets():
 
 @APP.route('/my_assets/')
 def my_assets():
-    """ Display my assets """
+    """ Display 'my assets' """
     conn = SqliteCmd(settings.DB_PATH)
     assets = conn.get_my_assets()
     return render_template('my_assets.html', my_assets=assets)
 
 @APP.route('/my_assets/add/')
 def add_my_assets():
-    """ Add an asset """
+    """ Add an asset in 'my assets' """
     conn = SqliteCmd(settings.DB_PATH)
     asset_key = request.args.get('assetkey')
     if not re.match('[a-f0-9_]+', asset_key):
@@ -139,7 +139,7 @@ def add_my_assets():
 
 @APP.route('/my_assets/delete/')
 def delete_my_assets():
-    """ Delete an asset """
+    """ Delete an asset in 'my assets' """
     conn = SqliteCmd(settings.DB_PATH)
     asset_key = request.args.get('assetkey')
     if not re.match('[a-f0-9_]+', asset_key):
@@ -149,7 +149,7 @@ def delete_my_assets():
 
 @APP.route('/my_assets/edit/')
 def edit_my_assets():
-    """ Edit an asset """
+    """ Edit an asset in 'my assets' """
     conn = SqliteCmd(settings.DB_PATH)
     asset_key = request.args.get('assetkey')
     if not re.match('[a-f0-9_]+', asset_key):
@@ -160,7 +160,10 @@ def edit_my_assets():
 
 @APP.route('/asset/')
 def asset():
-    """ Display one assets """
+    """
+    Display one asset
+    @params: assetkey, period
+    """
     conn = SqliteCmd(settings.DB_PATH)
     asset_key = request.args.get('assetkey')
     if not re.match('[a-f0-9_]+', asset_key):
@@ -180,6 +183,45 @@ def asset():
                     if asset_data[i][-1][k]['key'] == meta['key']:
                         del asset_data[i][-1][k]
     return render_template('asset.html', asset=asset_data, nickname=nickname)
+
+@APP.route('/asset/entry')
+def asset_entry():
+    """
+    Add an entry in an asset
+    @params: assetkey, key, value
+    """
+    conn = SqliteCmd(settings.DB_PATH)
+    asset_key = request.args.get('assetkey')
+    if not re.match('[a-f0-9_]+', asset_key):
+        return render_template('404.html'), 404
+    key = request.args.get('key')
+    if not re.match('[a-zA-Z]+', key):
+        return render_template('404.html'), 404
+    value = request.args.get('value')
+    if not re.match('[a-zA-Z0-9]+', value):
+        return render_template('404.html'), 404
+    # Get last entry
+    last_entry = conn.get_asset(asset_key, last_only=True)
+    if last_entry is None:
+        return render_template('404.html'), 404
+    try:
+        table_name = f'asset_{asset_key}'
+        timestamp = datetime.now()
+        packettype = last_entry[1]
+        packettypeid = asset_key.split('_')[0]
+        subtype = asset_key.split('_')[1]
+        seqnb = last_entry[2]
+        metadata = json.loads(last_entry[3].replace("'", '"'))
+    except:
+        return render_template('404.html'), 404
+    for meta in metadata:
+        if meta['key'] == key:
+            meta['value'] = value
+    metadata = json.dumps(metadata)
+    # Insert the entry in the database
+    conn.insert_asset(table_name, timestamp, packettype, packettypeid, subtype, seqnb, metadata)
+    return index()
+
 
 @APP.route('/asset.csv')
 def asset_csv():
