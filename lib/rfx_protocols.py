@@ -6,9 +6,9 @@ DomoTricks: RFX protocols
 Based on Sebastian Sjoholm work https://github.com/ssjoholm/rfxcmd_gc
 Copyright 2012-2014 Sebastian Sjoholm, sebastian.sjoholm@gmail.com
 Based on Nicolas Béguier work https://github.com/nbeguier/rfxcmd
-Copyright 2018-2021 by Nicolas BEGUIER, nicolas_beguier@hotmail.com
+Copyright 2018-2022 by Nicolas BEGUIER, nicolas_beguier@hotmail.com
 
-Copyright (C) 2021 Nicolas Béguier
+Copyright 2021-2022 Nicolas Béguier
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

@@ -59,4 +59,4 @@ INSERT INTO time_alerting (assetkey,functions) VALUES ('52_02_d503', 'report_tem
 Licensed under the [GPL](https://github.com/nbeguier/DomoTricks/blob/master/LICENSE).
 
 ## Copyright
-Copyright 2021 Nicolas Béguier; ([nbeguier](https://beguier.eu/nicolas/) - nicolas_beguier[at]hotmail[dot]com)
+Copyright 2021-2022 Nicolas Béguier; ([nbeguier](https://beguier.eu/nicolas/) - nicolas_beguier[at]hotmail[dot]com)

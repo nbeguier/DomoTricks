@@ -2,7 +2,7 @@
 """
 DomoTricks: Time alerting, should be use in CRON (or any other scheduler)
 
-Copyright (C) 2021 Nicolas Béguier
+Copyright 2021-2022 Nicolas Béguier
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
