@@ -14,7 +14,7 @@
 <h3>{{asset["nickname"]}}</h3>
 [{{asset["timestamp"]}}] <a href="/asset/?assetkey={{asset['key']}}&period=day" class="ms-3 link-warning"><ion-icon name="bar-chart"></ion-icon></a>
 {% for meta in asset["metadata"] %}
-<li><b>{{meta["key"]}}</b>: {{meta["value"]}} {{meta["unit"]}}{% if meta["key"] == 'Command' and meta["value"] == 'Off' %} <a href="/asset/entry?assetkey={{asset['key']}}&key=Command&value=On" class="ms-3 link-secondary"><ion-icon name="toggle-outline"></ion-icon></a>{% endif %}{{meta["unit"]}}{% if meta["key"] == 'Command' and meta["value"] == 'On' %} <a href="/asset/entry?assetkey={{asset['key']}}&key=Command&value=Off" class="ms-3 link-secondary"><ion-icon name="toggle"></ion-icon></a>{% endif %}</li>
+<li><b>{{meta["key"]}}</b>: {{meta["value"]}} {% if meta["key"] == 'Command' and meta["value"] == 'Off' %} <a href="/asset/entry?assetkey={{asset['key']}}&key=Command&value=On" class="ms-3 link-secondary"><ion-icon name="toggle-outline"></ion-icon></a>{% endif %}{{meta["unit"]}}{% if meta["key"] == 'Command' and meta["value"] == 'On' %} <a href="/asset/entry?assetkey={{asset['key']}}&key=Command&value=Off" class="ms-3 link-secondary"><ion-icon name="toggle"></ion-icon></a>{% endif %}</li>
 {% endfor %}
 <br>
 {% endfor %}
