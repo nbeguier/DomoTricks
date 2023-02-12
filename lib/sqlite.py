@@ -3,7 +3,7 @@
 """
 DomoTricks: Sqlite wrapper library
 
-Copyright 2021-2022 Nicolas Béguier
+Copyright 2021-2023 Nicolas Béguier
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
