@@ -24,6 +24,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 GMAIL_USER = 'me@gmail.com'
 GMAIL_PASSWORD = 'MyPassword'
 MAIL_RECIPIENTS = ['me+domotricks@gmail.com']
+SMTP_SERVER = 'smtp.gmail.com'
 
 # Database
 DB_PATH = '/opt/domotricks.db'

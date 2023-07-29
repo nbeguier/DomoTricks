@@ -56,7 +56,7 @@ Subject: {subject}
 
 {body}
 """
-    server_ssl = smtplib.SMTP_SSL('smtp.gmail.com', 465)
+    server_ssl = smtplib.SMTP_SSL(settings.SMTP_SERVER, 465)
     server_ssl.ehlo()
     server_ssl.login(settings.GMAIL_USER, settings.GMAIL_PASSWORD)
     server_ssl.sendmail(sent_from, sent_to, email_text.encode())
