@@ -1,7 +1,7 @@
 # DomoTricks
 DomoTricks is a domotic application to handle 433MHz assets.
 
-[![Build Status](https://travis-ci.org/nbeguier/DomoTricks.svg?branch=master)](https://travis-ci.org/nbeguier/DomoTricks) [![Python 3.7-3.8](https://img.shields.io/badge/python-3.7|3.8-green.svg)](https://www.python.org/)
+[![Python 3.7-3.8](https://img.shields.io/badge/python-3.7|3.8-green.svg)](https://www.python.org/)
 
 ## Prerequisites
 
@@ -59,4 +59,4 @@ INSERT INTO time_alerting (assetkey,functions) VALUES ('52_02_d503', 'report_tem
 Licensed under the [GPL](https://github.com/nbeguier/DomoTricks/blob/master/LICENSE).
 
 ## Copyright
-Copyright 2021-2022 Nicolas Béguier; ([nbeguier](https://beguier.eu/nicolas/) - nicolas_beguier[at]hotmail[dot]com)
+Copyright 2021-2023 Nicolas Béguier; ([nbeguier](https://beguier.eu/nicolas/) - nicolas_beguier[at]hotmail[dot]com)
