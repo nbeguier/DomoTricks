@@ -1,6 +1,7 @@
 *.db
 *.sql
 settings.py
+domotricks.db-journal
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
